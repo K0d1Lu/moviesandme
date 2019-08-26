@@ -1,15 +1,75 @@
 import React, { Component } from 'react';
-import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native'
+import { View, TextInput, Button, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native'
+import FilmItem from './filmtems'
+import { getFilmSearch } from '../api/TMDBApi';
 
 export default class Search extends Component {
+  constructor(props) {
+    super(props);
+    this.query = '';
+    this.state = { defaultText: '', loading: false };
+  }
+
+  _keyExtractor = (item, index) => index + item.id.toString();
+
+  _changeText(text) {
+    this.query = text
+    this.textHasChanged = true;
+  }
+
+  _updateFilms(force) {
+    if (!this.query || (this.page === this.maxPage && !this.textHasChanged) || (!this.textHasChanged && !force)) return;
+
+    if (this.textHasChanged) {
+      this.page = 1;
+      this.maxPage = null;
+      this.textHasChanged = false; 
+      this.setState({ films: []});
+    }
+    
+    this.setState({ loading: true})
+
+    getFilmSearch(this.query, this.page)
+      .then( data => {
+        this.setState({
+          films: [...this.state.films, ...data.results], 
+          loading: false, 
+          defaultText: data.results.length ? '' : 'Acun résultat'
+        })
+
+        if (!this.maxPage) this.maxPage = data.total_pages;
+        if (this.page !== this.maxPage) this.page++;
+      })
+  }
+
+  _displayLoading() {
+    if (this.state.loading) {
+      return (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size='large' />
+        </View>
+      )
+    }
+  }
+
   render() {
     return (
       <View style={styles.main_container}>
-        <TextInput style={styles.textinput} placeholder='Tifftre du film'/>
-        <Button title='Rechercher' onPress={() => {}}/>
+        <TextInput
+          style={styles.textinput}
+          placeholder='Titre du film'
+          onChangeText={text => this._changeText(text) }
+          onSubmitEditing={() => this._updateFilms()}
+        />
+        <Button title='Rechercher' onPress={() => this._updateFilms() }/>
+        <Text>{this.state.defaultText}</Text>
+        {this._displayLoading()}
         <FlatList
-          data={[{key: 'a'}, {key: 'b'}]}
-          renderItem={({item}) => <Text>{item.key}</Text>}
+          data={this.state.films}
+          keyExtractor={ this._keyExtractor }
+          renderItem={({item}) => <FilmItem film={item} />}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => this._updateFilms(true)}
         />
       </View>
     );
@@ -19,6 +79,15 @@ export default class Search extends Component {
 const styles = StyleSheet.create({
   main_container: {
     marginTop: 40
+  },
+  loading_container: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 130,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   textinput: {
     marginLeft: 5,
