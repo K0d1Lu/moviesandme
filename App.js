@@ -1,14 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
-
-import Search from './components/search'
+import Navigation from './navigation/navigation'
 
 export default function App() {
   return (
-    <View>
-      <Search />
-    </View>
+    <Navigation />
   );
 }
-
-
