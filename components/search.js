@@ -42,6 +42,8 @@ export default class Search extends Component {
       })
   }
 
+  _displayDetailForFilm = filmId => this.props.navigation.navigate('FilmDetails', { filmId })
+
   _displayLoading() {
     if (this.state.loading) {
       return (
@@ -67,7 +69,7 @@ export default class Search extends Component {
         <FlatList
           data={this.state.films}
           keyExtractor={ this._keyExtractor }
-          renderItem={({item}) => <FilmItem film={item} />}
+          renderItem={({item}) => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} />}
           onEndReachedThreshold={0.5}
           onEndReached={() => this._updateFilms(true)}
         />
