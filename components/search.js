@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, TextInput, Button, FlatList, ActivityIndicator, Text, StyleSheet } from 'react-native'
-import FilmItem from './filmtems'
+import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
+import FilmItem from './filmtems';
+import { displayLoading } from './loader';
 import { getFilmSearch } from '../api/TMDBApi';
 
 export default class Search extends Component {
@@ -42,17 +43,9 @@ export default class Search extends Component {
       })
   }
 
-  _displayDetailForFilm = filmId => this.props.navigation.navigate('FilmDetails', { filmId })
+  _displayDetailForFilm = filmId => this.props.navigation.navigate('FilmDetails', { filmId });
 
-  _displayLoading() {
-    if (this.state.loading) {
-      return (
-        <View style={styles.loading_container}>
-          <ActivityIndicator size='large' />
-        </View>
-      )
-    }
-  }
+  _displayLoading = displayLoading.bind(this);
 
   render() {
     return (
@@ -65,7 +58,7 @@ export default class Search extends Component {
         />
         <Button title='Rechercher' onPress={() => this._updateFilms() }/>
         <Text>{this.state.defaultText}</Text>
-        {this._displayLoading()}
+        {this._displayLoading('search_loader')}
         <FlatList
           data={this.state.films}
           keyExtractor={ this._keyExtractor }
