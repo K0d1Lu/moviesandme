@@ -3,6 +3,9 @@ import { View, ScrollView, Text, Image, StyleSheet, Dimensions } from 'react-nat
 import { displayLoading } from './loader';
 import { getFilmDetails, getImageFromApi } from '../api/TMDBApi';
 
+import moment from 'moment';
+import numeral from 'numeral';
+
 export default class filmDetails extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +24,7 @@ export default class filmDetails extends Component {
 
   /**
    * Display all movie's genres
-   * 
+   *
    * @param {Array} genres - array of objects with genres
    * @returns {String} formatted genres' string
    */
@@ -48,33 +51,34 @@ export default class filmDetails extends Component {
           </Text>
           <Text>
             <Text style={styles.bold}>
-              Sorti le : 
-            </Text> 
-            {film.release_date}
+              Sorti le :
+            </Text>
+            {moment(new Date(film.release_date)).format('DD/MM/YYYY')}
           </Text>
           <Text>
             <Text style={styles.bold}>
-              Note : 
+              Note :
             </Text>
              {film.vote_average} / 10</Text>
           <Text>
             <Text style={styles.bold}>
-              Nombre de votes : 
+              Nombre de votes :
             </Text>
              {film.vote_count}</Text>
           <Text>
             <Text style={styles.bold}>
-              Budget :  
+              Budget :
             </Text>
-             {film.budget} $</Text>
+            {numeral(film.budget).format('0,0[.]00 $')}
+          </Text>
           <Text>
             <Text style={styles.bold}>
-              Genre(s) : 
+              Genre(s) :
             </Text>
              {this._formatArrays(film.genres)}</Text>
           <Text>
             <Text style={styles.bold}>
-              Companie(s) : 
+              Companie(s) :
             </Text>
              {this._formatArrays(film.production_companies)}</Text>
         </ScrollView>
@@ -82,7 +86,7 @@ export default class filmDetails extends Component {
     }
   }
 
-  render() {    
+  render() {
     return (
       <View style={styles.main_container}>
         {this._displayLoading('film_loader')}
