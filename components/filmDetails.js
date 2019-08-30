@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, Image, StyleSheet, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
+import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { displayLoading } from './loader';
 import { getFilmDetails, getImageFromApi } from '../api/TMDBApi';
 
 import moment from 'moment';
 import numeral from 'numeral';
 
-export default class filmDetails extends Component {
+class filmDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -22,6 +23,11 @@ export default class filmDetails extends Component {
     })
   }
 
+  _toggleFavorite(value) {
+    const ACTION = { type: 'TOGGLE_FAVORITE', value};
+    this.props.dispatch(ACTION);
+  }
+
   /**
    * Display all movie's genres
    *
@@ -33,6 +39,21 @@ export default class filmDetails extends Component {
   }
 
   _displayLoading = displayLoading.bind(this);
+
+  _displayFavoriteImage(id) {
+    let sourceImage = require('../images/ic_favorite.png')
+
+    if (!this.props.favoritesFilms.find(i => i === id)) {
+      sourceImage = require('../images/ic_favorite_border.png')
+    }
+
+    return (
+      <Image
+        style={styles.favorite_image}
+        source={sourceImage}
+      />
+    )
+  }
 
   _displayMovie() {
     const { film } =  this.state;
@@ -46,6 +67,10 @@ export default class filmDetails extends Component {
           <Text style={styles.title}>
             {film.title}
           </Text>
+          <Image />
+          <TouchableOpacity title='Ajouter aux favoris' onPress={() => this._toggleFavorite(film) } >
+            {this._displayFavoriteImage(film.id)}
+          </TouchableOpacity>
           <Text style={styles.synopsis}>
             {film.overview}
           </Text>
@@ -117,6 +142,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10
   },
+  favorite_container: {
+    alignItems: 'center'
+  },
+  favorite_image: {
+    height: 40,
+    width: 40
+  },
   synopsis: {
     color: '#666666',
     fontStyle: 'italic',
@@ -126,3 +158,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
+
+const mapStateToProps = state => {
+  return { favoritesFilms } = state
+}
+
+export default connect(mapStateToProps)(filmDetails)
