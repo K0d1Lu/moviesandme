@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
 import FilmItem from './filmtems';
 import { displayLoading } from './loader';
 import { getFilmSearch } from '../api/TMDBApi';
 
-export default class Search extends Component {
+class Search extends Component {
   constructor(props) {
     super(props);
     this.query = '';
@@ -47,6 +48,13 @@ export default class Search extends Component {
 
   _displayLoading = displayLoading.bind(this);
 
+  _isFav(id) {
+    if (!this.props.favoritesFilms.find(i => i === id)) {
+      return false;
+    }
+    return true;
+  }
+
   render() {
     return (
       <View style={styles.main_container}>
@@ -62,7 +70,7 @@ export default class Search extends Component {
         <FlatList
           data={this.state.films}
           keyExtractor={ this._keyExtractor }
-          renderItem={({item}) => <FilmItem film={item} displayDetailForFilm={this._displayDetailForFilm} />}
+          renderItem={({item}) => <FilmItem film={item} favorite={this._isFav(item.id)} displayDetailForFilm={this._displayDetailForFilm} />}
           onEndReachedThreshold={0.5}
           onEndReached={() => this._updateFilms(true)}
         />
@@ -93,3 +101,11 @@ const styles = StyleSheet.create({
     paddingLeft: 5
   }
 });
+
+
+
+const mapStateToProps = state => {
+  return { favoritesFilms } = state
+}
+
+export default connect(mapStateToProps)(Search)

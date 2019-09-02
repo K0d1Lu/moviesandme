@@ -1,8 +1,25 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native'
-import { getImageFromApi } from '../api/TMDBApi'
+import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
+import { getImageFromApi } from '../api/TMDBApi';
 
 export default class filmItem extends Component {
+
+  _displayFavoriteImage() {
+    let sourceImage = require('../images/ic_favorite.png')
+    let style = styles.favorite_image;
+    
+    if (!this.props.favorite) {
+      style = styles.display_none;
+    }
+
+    return (
+      <Image
+        style={style}
+        source={sourceImage}
+      />
+    )
+  }
+
   render() {
     const { film, displayDetailForFilm } = this.props;
 
@@ -14,6 +31,7 @@ export default class filmItem extends Component {
         />
         <View style={styles.info_container}>
           <View style={styles.header_container}>
+            {this._displayFavoriteImage()}
             <Text style={styles.title_text}>{film.title}</Text>
             <Text style={styles.vote_text}>{film.vote_average}</Text>
           </View>
@@ -53,6 +71,13 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     fontWeight: 'bold',
     fontSize: 15
+  },
+  favorite_image: {
+    height: 15,
+    width: 15
+  },
+  display_none: {
+    display: 'none'
   },
   vote_text: {
     fontWeight: 'bold',
