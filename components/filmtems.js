@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 import { getImageFromApi } from '../api/TMDBApi';
 
+import FadeIn from '../animations/fadeIn'
+
 export default class filmItem extends Component {
 
   _displayFavoriteImage() {
@@ -24,21 +26,23 @@ export default class filmItem extends Component {
     const { film, displayDetailForFilm } = this.props;
 
     return (
-      <TouchableOpacity style={styles.main_container} onPress={() => displayDetailForFilm(film.id)}>
-        <Image
-          style={styles.image}
-          source={{uri: getImageFromApi(film.poster_path) }}
-        />
-        <View style={styles.info_container}>
-          <View style={styles.header_container}>
-            {this._displayFavoriteImage()}
-            <Text style={styles.title_text}>{film.title}</Text>
-            <Text style={styles.vote_text}>{film.vote_average}</Text>
+      <FadeIn>
+        <TouchableOpacity style={styles.main_container} onPress={() => displayDetailForFilm(film.id)}>
+          <Image
+            style={styles.image}
+            source={{uri: getImageFromApi(film.poster_path) }}
+          />
+          <View style={styles.info_container}>
+            <View style={styles.header_container}>
+              {this._displayFavoriteImage()}
+              <Text style={styles.title_text}>{film.title}</Text>
+              <Text style={styles.vote_text}>{film.vote_average}</Text>
+            </View>
+              <Text style={styles.overview} numberOfLines={6}>{film.overview}</Text>
+              <Text style={styles.release}>{film.release_date}</Text>
           </View>
-            <Text style={styles.overview} numberOfLines={6}>{film.overview}</Text>
-            <Text style={styles.release}>{film.release_date}</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </FadeIn>
     )
   }
 }

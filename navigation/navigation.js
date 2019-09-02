@@ -3,6 +3,7 @@ import { createStackNavigator, createBottomTabNavigator, createAppContainer } fr
 import Search from '../components/search'
 import Favorites from '../components/favorites'
 import FilmDetails from '../components/filmDetails'
+import Test from '../components/test'
 
 import { Image, StyleSheet } from 'react-native'
 
@@ -31,6 +32,12 @@ const MoviesTabNavigator = createBottomTabNavigator({
     screen: Favorites,
     navigationOptions: {
       tabBarIcon: () => <Image source={require('../images/ic_favorite.png')} style={styles.icons} />
+    }
+  },
+  Test: {
+    screen: Test,
+    navigationOptions: {
+      tabBarIcon: () => <Image source={require('../images/test.png')} style={styles.icons} />
     }
   }
 }, {

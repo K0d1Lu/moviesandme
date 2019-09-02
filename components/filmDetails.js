@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Share, Platform } from 'react-native';
 import { displayLoading } from './loader';
 import { getFilmDetails, getImageFromApi } from '../api/TMDBApi';
 
@@ -28,6 +28,13 @@ class filmDetails extends Component {
     this.props.dispatch(ACTION);
   }
 
+  // See Lnk below for IOS specific implementation
+  // https://openclassrooms.com/fr/courses/4902061-developpez-une-application-mobile-react-native/5047156-realisez-des-developpements-specifiques
+  _shareFilm() {
+    const { film } = this.state;
+    Share.share({ title: film.title, message: film.overview})
+  }
+
   /**
    * Display all movie's genres
    *
@@ -39,6 +46,21 @@ class filmDetails extends Component {
   }
 
   _displayLoading = displayLoading.bind(this);
+
+  _displayFloatingActionButton() {
+    const { film } = this.state;
+
+    if (film && Platform.OS === 'android') {
+      return (
+        <TouchableOpacity
+          style={styles.share_touchable_floatingactionbutton}
+          onPress={() => this._shareFilm()}
+        >
+          <Image style={styles.share_image} source={require('../images/ic_share.png')}/>
+        </TouchableOpacity>
+      )
+    }
+  }
 
   _displayFavoriteImage(id) {
     let sourceImage = require('../images/ic_favorite.png')
@@ -71,6 +93,7 @@ class filmDetails extends Component {
           <TouchableOpacity title='Ajouter aux favoris' onPress={() => this._toggleFavorite(film) } >
             {this._displayFavoriteImage(film.id)}
           </TouchableOpacity>
+          {this._displayFloatingActionButton()}
           <Text style={styles.synopsis}>
             {film.overview}
           </Text>
@@ -156,6 +179,22 @@ const styles = StyleSheet.create({
   },
   bold: {
     fontWeight: 'bold'
+  },
+  share_touchable_floatingactionbutton: {
+    marginLeft: 80,
+    marginTop: -10,
+    width: 40,
+    height: 40,
+    right: 30,
+    bottom: 30,
+    borderRadius: 30,
+    backgroundColor: '#e91e63',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  share_image: {
+    width: 30,
+    height: 30
   }
 })
 
