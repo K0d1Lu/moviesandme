@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, ScrollView, Text, Image, TouchableOpacity, StyleSheet, Dimensions, Share, Platform } from 'react-native';
 import { displayLoading } from './loader';
+import ZoomInOut from '../animations/zoomInOut';
 import { getFilmDetails, getImageFromApi } from '../api/TMDBApi';
 
 import moment from 'moment';
@@ -70,10 +71,12 @@ class filmDetails extends Component {
     }
 
     return (
-      <Image
-        style={styles.favorite_image}
-        source={sourceImage}
-      />
+      <ZoomInOut scale={1.5}>
+        <Image
+          style={styles.favorite_image}
+          source={sourceImage}
+        />
+      </ZoomInOut>
     )
   }
 
