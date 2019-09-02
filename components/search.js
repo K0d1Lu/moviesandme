@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
-import FilmItem from './filmtems';
+import FilmList from './filmList';
 import { displayLoading } from './loader';
 import { getFilmSearch } from '../api/TMDBApi';
 
@@ -11,8 +11,6 @@ class Search extends Component {
     this.query = '';
     this.state = { defaultText: '', loading: false };
   }
-
-  _keyExtractor = (item, index) => index + item.id.toString();
 
   _changeText(text) {
     this.query = text
@@ -25,17 +23,17 @@ class Search extends Component {
     if (this.textHasChanged) {
       this.page = 1;
       this.maxPage = null;
-      this.textHasChanged = false; 
+      this.textHasChanged = false;
       this.setState({ films: []});
     }
-    
+
     this.setState({ loading: true})
 
     getFilmSearch(this.query, this.page)
       .then( data => {
         this.setState({
-          films: [...this.state.films, ...data.results], 
-          loading: false, 
+          films: [...this.state.films, ...data.results],
+          loading: false,
           defaultText: data.results.length ? '' : 'Acun résultat'
         })
 
@@ -44,16 +42,7 @@ class Search extends Component {
       })
   }
 
-  _displayDetailForFilm = filmId => this.props.navigation.navigate('FilmDetails', { filmId });
-
   _displayLoading = displayLoading.bind(this);
-
-  _isFav(id) {
-    if (!this.props.favoritesFilms.find(i => i === id)) {
-      return false;
-    }
-    return true;
-  }
 
   render() {
     return (
@@ -67,13 +56,7 @@ class Search extends Component {
         <Button title='Rechercher' onPress={() => this._updateFilms() }/>
         <Text>{this.state.defaultText}</Text>
         {this._displayLoading('search_loader')}
-        <FlatList
-          data={this.state.films}
-          keyExtractor={ this._keyExtractor }
-          renderItem={({item}) => <FilmItem film={item} favorite={this._isFav(item.id)} displayDetailForFilm={this._displayDetailForFilm} />}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => this._updateFilms(true)}
-        />
+        <FilmList data={this.state.films} onEndReached={() => this._updateFilms(true)} navigation={this.props.navigation} />
       </View>
     );
   }

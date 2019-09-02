@@ -11,7 +11,6 @@ export function getFilmSearch(chars, page) {
 
 export function getFilmDetails(id) {
   const url = `${apiBaseUrl}3/movie/${id}?api_key=${APIKEY}&language=${language}`
-  console.log('url is ', url)
   return fetch(url)
     .then( response => response.json())
     .catch( e => console.error);

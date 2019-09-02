@@ -15,7 +15,7 @@ const SearchStackNavigator = createStackNavigator({
   },
   FilmDetails: {
     screen: FilmDetails
-  } 
+  }
 }, {
   initialRouteName: "Search"
 })
@@ -26,7 +26,6 @@ const MoviesTabNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarIcon: () => <Image source={require('../images/ic_search.png')} style={styles.icons} />
     }
-    
   },
   Favorites: {
     screen: Favorites,

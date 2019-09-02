@@ -7,7 +7,7 @@ export default class filmItem extends Component {
   _displayFavoriteImage() {
     let sourceImage = require('../images/ic_favorite.png')
     let style = styles.favorite_image;
-    
+
     if (!this.props.favorite) {
       style = styles.display_none;
     }

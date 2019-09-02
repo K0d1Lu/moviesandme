@@ -43,7 +43,7 @@ class filmDetails extends Component {
   _displayFavoriteImage(id) {
     let sourceImage = require('../images/ic_favorite.png')
 
-    if (!this.props.favoritesFilms.find(i => i === id)) {
+    if (!this.props.favoritesFilms.find(i => i.id === id)) {
       sourceImage = require('../images/ic_favorite_border.png')
     }
 

@@ -6,15 +6,15 @@ export default function toggleFavorite(state = initialState, action) {
   switch (action.type) {
     case 'TOGGLE_FAVORITE':
       const id = action.value.id;
-      if (!state.favoritesFilms.find(i => i === id)) {
+      if (!state.favoritesFilms.find(i => i.id === id)) {
         nextState = {
           ...state,
-          favoritesFilms: [...state.favoritesFilms, action.value.id]
+          favoritesFilms: [...state.favoritesFilms, action.value]
         }
       } else {
         nextState = {
           ...state,
-          favoritesFilms: state.favoritesFilms.filter(i => i !== id)
+          favoritesFilms: state.favoritesFilms.filter(i => i.id !== id)
         }
       }
 
